@@ -4,6 +4,7 @@ SRCS		= 	cub3D.c \
 				parsing/error.c \
 				parsing/free_all.c \
 				graphics/graphics.c \
+				graphics/move.c \
 				get_next_line/get_next_line.c \
 				get_next_line/get_next_line_utils.c
 CC 			= 	gcc

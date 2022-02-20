@@ -6,7 +6,7 @@
 /*   By: lfornio <lfornio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/03 18:00:46 by lfornio           #+#    #+#             */
-/*   Updated: 2022/02/04 13:01:57 by lfornio          ###   ########.fr       */
+/*   Updated: 2022/02/20 12:37:24 by lfornio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,18 @@ void create_tab(t_data *data, char *file_name) //создаем массив с�
 	full_map(the_map->map, the_map->width_map);				  //заполняем карту пробелами
 }
 
+void get_direction(t_data *data, char ch)
+{
+	if(ch == 'N')
+		data->player_struct->vector = 3 * PI / 2;
+	else if(ch == 'W')
+		data->player_struct->vector = PI;
+	else if(ch == 'E')
+		data->player_struct->vector =  2 * PI;
+	else if(ch == 'S')
+		data->player_struct->vector = PI /2;
+}
+
 void search_player(char *str, int y, t_data *data)
 {
 	int i;
@@ -144,8 +156,11 @@ void search_player(char *str, int y, t_data *data)
 	{
 		if (str[i] == 'N' || str[i] == 'W' || str[i] == 'E' || str[i] == 'S')
 		{
+			get_direction(data, str[i]);
 			data->player_struct->pos.x = i;
+			data->player_struct->pl_x = i * STEP + STEP / 2;
 			data->player_struct->pos.y = y;
+			data->player_struct->pl_y = y * STEP + STEP / 2;
 			break;
 		}
 		i++;
@@ -175,10 +190,17 @@ void init_player(t_data *data) //заполняем структуру игро�
 	player_position_search(data);
 	printf("x = %d y = %d\n", data->player_struct->pos.x, data->player_struct->pos.y);
 }
+void print_player(t_data *data)
+{
+	printf("x = %d, y = %d\n", data->player_struct->pos.x, data->player_struct->pos.y);
+	printf("pl_x = %f, pl_y = %f\n", data->player_struct->pl_x, data->player_struct->pl_y);
+	printf("vector = %f\n", data->player_struct->vector);
+}
 
 void parsing(t_data *data, char *map)
 {
 	error_file(map);	   //проверка на .cub
 	create_tab(data, map); //создаем структуру для карты
 	init_player(data);	   //создаем структуру игрока
+	print_player(data);
 }

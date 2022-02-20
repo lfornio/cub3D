@@ -6,7 +6,7 @@
 /*   By: lfornio <lfornio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/03 16:10:58 by lfornio           #+#    #+#             */
-/*   Updated: 2022/02/04 12:53:34 by lfornio          ###   ########.fr       */
+/*   Updated: 2022/02/20 17:56:45 by lfornio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,14 @@ typedef struct s_pos   //структура исходной позиции
 
 }	t_pos;
 
-typedef struct s_player   //структура игрока
+typedef struct s_player   //структура игрока и луча
 {
 	t_pos		pos;
-	float		pl_x;
-	float		pl_y;
-	float		vector;
+	double		pl_x;
+	double		pl_y;
+	double		vector;
+	double		start;
+	double		end;
 
 }	t_player;
 
@@ -78,6 +80,8 @@ void	error_file(const char *name_file);
 void parsing(t_data *data, char *map);
 void free_all(t_data *data);
 void graphics(t_data *data);
+void print_player(t_data *data);
+void move(t_data *data);
 
 
 
