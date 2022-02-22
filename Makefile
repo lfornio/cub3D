@@ -8,7 +8,7 @@ SRCS		= 	cub3D.c \
 				get_next_line/get_next_line.c \
 				get_next_line/get_next_line_utils.c
 CC 			= 	gcc
-FLAGS		=	-Wall -Wextra -Werror
+FLAGS		=	-g -Wall -Wextra -Werror
 INCLUDES	=	cub3D.h
 OBJS		=	$(SRCS:.c=.o)
 LIBFT_A		=   libft/libft.a

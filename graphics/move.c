@@ -6,7 +6,7 @@
 /*   By: lfornio <lfornio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 17:54:06 by lfornio           #+#    #+#             */
-/*   Updated: 2022/02/20 19:09:31 by lfornio          ###   ########.fr       */
+/*   Updated: 2022/02/22 10:01:56 by lfornio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,83 +14,68 @@
 
 void esc_exit(t_data *data)
 {
-	mlx_destroy_window(data->win_struct->mlx_ptr_window, data->win_struct->win_ptr_window);
+	mlx_destroy_window(data->win->mlx_ptr_win, data->win->win_ptr_win);
 	exit(0);
 }
-// void ft_destroy(char *str, t_data *data, int *x)
-// {
-// 	int i;
-// 	i = 0;
 
-// 	while (str[i])
-// 	{
-// 		mlx_destroy_image(data->win_struct->mlx_ptr_window, data->win_struct->win_ptr_window);
-// 		*x += STEP;
-// 		i++;
-// 	}
-// 	*x = 0;
-// }
-
-// void remove_image(t_data *data)
-// {
-// 	char **tab;
-// 	tab = data->map_struct->map;
-// 	int i;
-// 	int x;
-// 	int y;
-
-// 	x = 0;
-// 	y = 0;
-
-// 	i = 0;
-// 	while (tab[i])
-// 	{
-// 		ft_destroy(tab[i], data, &x);
-// 		y += STEP;
-// 		i++;
-// 	}
-// }
-
-int look(int key, t_data *data)
+int change_position(t_data *data, int j, int i, char ch)
 {
+	int x;
+	int y;
+
+	x = data->plr->pos.x;
+	y = data->plr->pos.y;
+
+	if (data->map->tab[j][i] == '1')
+		return (-1);
+	data->map->tab[y][x] = '0';
+	data->map->tab[j][i] = ch;
+	if (i - x)
+	{
+		data->plr->pos.x = x + (i - x);
+		data->plr->pl_x = data->plr->pl_x + (i - x) * ZOOM2D;
+	}
+	if (j - y)
+	{
+		data->plr->pos.y = y + (j - y);
+		data->plr->pl_y = data->plr->pl_y + (j - y) * ZOOM2D;
+	}
+	return (0);
+}
+
+int to_look_to_go(int key, t_data *data)
+{
+	int x;
+	int y;
+
+	x = data->plr->pos.x;
+	y = data->plr->pos.y;
 	if (key == 53)
 		esc_exit(data);
-	// if (key == 123)
-	// {
-	// 	data->player_struct->vector -= (PI / 3) / data->win_struct->width_window;
-	// }
-	// if (element_count(mlx, 'P') == 1)
-	// {
-	// 	mlx->p.x = pos_player_x(mlx->tab, 'P');
-	// 	mlx->p.y = pos_player_y(mlx->tab, 'P');
-	// 	if (key == 2)
-	// 		step_count(mlx, mlx->p.y, mlx->p.x + 1);
-	// 	else if (key == 0)
-	// 		step_count(mlx, mlx->p.y, mlx->p.x - 1);
-	// 	else if (key == 1)
-	// 		step_count(mlx, mlx->p.y + 1, mlx->p.x);
-	// 	else if (key == 13)
-	// 		step_count(mlx, mlx->p.y - 1, mlx->p.x);
-	// 	if (mlx->p.cake == mlx->cake && element_count(mlx, 'E') == 1)
-	// 	{
-	// 		mlx->p.x_ex = pos_player_x(mlx->tab, 'E');
-	// 		mlx->p.y_ex = pos_player_y(mlx->tab, 'E');
-	// 		mlx->tab[mlx->p.y_ex][mlx->p.x_ex] = 'F';
-	// 	}
-	// mlx_destroy_image(mlx->mlx_ptr, mlx->img_ptr);
-	// remove_image(data);
-	// mlx_destroy_window(data->win_struct->mlx_ptr_window, data->win_struct->win_ptr_window);
-	// graphics(data);
-	// }
-
+	if (key == 123)
+		data->plr->vector -= 5 * PI / 180;
+	else if (key == 124)
+		data->plr->vector += 5 * PI / 180;
+	else if (key == 2)
+		x++;
+	else if (key == 0)
+		x--;
+	else if (key == 1)
+		y++;
+	else if (key == 13)
+		y--;
+	if (change_position(data, y, x, data->map->tab[data->plr->pos.y][data->plr->pos.x]) < 0)
+		return (-1);
+	mlx_destroy_image(data->win->mlx_ptr_win, data->images->fon.fon_img_ptr);
+	graphics_2d(data);
 	return (0);
 }
 
 void move(t_data *data)
 {
-	mlx_hook(data->win_struct->win_ptr_window, 2, 1L << 0, look, data);
+	mlx_hook(data->win->win_ptr_win, 2, 1L << 0, to_look_to_go, data);
 	// mlx_hook(mlx->win_ptr, 17, 1L << 0, step_exit, mlx);
-	// mlx_loop(mlx->mlx_ptr);
 
-	mlx_loop(data->win_struct->mlx_ptr_window); //ждем дейсвий
+	mlx_loop(data->win->mlx_ptr_win); //ждем дейсвий
+	mlx_loop(data->win->mlx2_ptr_win); //ждем дейсвий
 }

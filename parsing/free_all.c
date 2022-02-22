@@ -6,7 +6,7 @@
 /*   By: lfornio <lfornio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/04 08:12:57 by lfornio           #+#    #+#             */
-/*   Updated: 2022/02/04 12:47:17 by lfornio          ###   ########.fr       */
+/*   Updated: 2022/02/21 17:36:35 by lfornio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,17 @@ void free_tab(char **tab)  //очищение массива строк - кар
 
 void free_map(t_map *p) //чистим структуру для карты
 {
-	free_tab(p->map);
+	free_tab(p->tab);
 	free(p);
 }
 
 
 void free_all(t_data *data) //чистим основную структуру
 {
-	free_map(data->map_struct);
-	free(data->win_struct);
-	free(data->player_struct);
+	free_map(data->map);
+	free(data->win);
+	free(data->plr);
+	free(data->images);
+	free(data->arr_distances);
 
 }

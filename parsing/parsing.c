@@ -6,7 +6,7 @@
 /*   By: lfornio <lfornio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/03 18:00:46 by lfornio           #+#    #+#             */
-/*   Updated: 2022/02/20 12:37:24 by lfornio          ###   ########.fr       */
+/*   Updated: 2022/02/22 10:02:20 by lfornio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,23 +129,23 @@ void create_tab(t_data *data, char *file_name) //создаем массив с�
 	the_map = (t_map *)malloc(sizeof(t_map)); //иниц структуру для карты
 	if (!the_map)
 		return;
-	data->map_struct = the_map;
+	data->map = the_map;
 	the_map->height_map = size_tab_from_file(file_name);	  //высота карты = количество строк
-	the_map->map = new_tab(file_name, the_map->height_map);	  // массив строк в структуре карта
-	the_map->width_map = max_lenght_str_in_map(the_map->map); //ширина карты = количество столбцов
-	full_map(the_map->map, the_map->width_map);				  //заполняем карту пробелами
+	the_map->tab = new_tab(file_name, the_map->height_map);	  // массив строк в структуре карта
+	the_map->width_map = max_lenght_str_in_map(the_map->tab); //ширина карты = количество столбцов
+	full_map(the_map->tab, the_map->width_map);				  //заполняем карту пробелами
 }
 
 void get_direction(t_data *data, char ch)
 {
 	if(ch == 'N')
-		data->player_struct->vector = 3 * PI / 2;
+		data->plr->vector = 3 * PI / 2;
 	else if(ch == 'W')
-		data->player_struct->vector = PI;
+		data->plr->vector = PI;
 	else if(ch == 'E')
-		data->player_struct->vector =  2 * PI;
+		data->plr->vector =  2 * PI;
 	else if(ch == 'S')
-		data->player_struct->vector = PI /2;
+		data->plr->vector = PI /2;
 }
 
 void search_player(char *str, int y, t_data *data)
@@ -157,10 +157,10 @@ void search_player(char *str, int y, t_data *data)
 		if (str[i] == 'N' || str[i] == 'W' || str[i] == 'E' || str[i] == 'S')
 		{
 			get_direction(data, str[i]);
-			data->player_struct->pos.x = i;
-			data->player_struct->pl_x = i * STEP + STEP / 2;
-			data->player_struct->pos.y = y;
-			data->player_struct->pl_y = y * STEP + STEP / 2;
+			data->plr->pos.x = i;
+			data->plr->pl_x = i * ZOOM2D + ZOOM2D / 2;
+			data->plr->pos.y = y;
+			data->plr->pl_y = y * ZOOM2D + ZOOM2D / 2;
 			break;
 		}
 		i++;
@@ -170,7 +170,7 @@ void search_player(char *str, int y, t_data *data)
 void player_position_search(t_data *data)
 {
 	char **tab;
-	tab = data->map_struct->map;
+	tab = data->map->tab;
 	int i;
 	i = 0;
 	while (tab[i])
@@ -186,16 +186,30 @@ void init_player(t_data *data) //заполняем структуру игро�
 	plr = (t_player *)malloc(sizeof(t_player));
 	if (!plr)
 		return;
-	data->player_struct = plr;
+	data->plr = plr;
 	player_position_search(data);
-	printf("x = %d y = %d\n", data->player_struct->pos.x, data->player_struct->pos.y);
 }
+
+
+
 void print_player(t_data *data)
 {
-	printf("x = %d, y = %d\n", data->player_struct->pos.x, data->player_struct->pos.y);
-	printf("pl_x = %f, pl_y = %f\n", data->player_struct->pl_x, data->player_struct->pl_y);
-	printf("vector = %f\n", data->player_struct->vector);
+	printf("x = %d, y = %d\n", data->plr->pos.x, data->plr->pos.y);
+	printf("pl_x = %f, pl_y = %f\n", data->plr->pl_x, data->plr->pl_y);
+	printf("vector = %f\n", data->plr->vector);
 }
+
+void init_arr_distances(t_data *data) //инициализируем массив расстояниями до точки
+{
+	int *arr;;
+	arr = (int *)malloc(sizeof(int) * data->win->width2d_win);
+	if (!arr)
+		return;
+	data->arr_distances = arr;
+}
+
+
+
 
 void parsing(t_data *data, char *map)
 {
@@ -203,4 +217,5 @@ void parsing(t_data *data, char *map)
 	create_tab(data, map); //создаем структуру для карты
 	init_player(data);	   //создаем структуру игрока
 	print_player(data);
+
 }
