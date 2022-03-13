@@ -9,6 +9,7 @@
 		"__hash_table": "c",
 		"functional": "c",
 		"type_traits": "c",
-		"__locale": "c"
+		"__locale": "c",
+		"iterator": "c"
 	}
 }

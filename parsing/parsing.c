@@ -6,7 +6,7 @@
 /*   By: lfornio <lfornio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/03 18:00:46 by lfornio           #+#    #+#             */
-/*   Updated: 2022/02/22 10:02:20 by lfornio          ###   ########.fr       */
+/*   Updated: 2022/03/12 20:28:18 by lfornio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,14 +138,22 @@ void create_tab(t_data *data, char *file_name) //создаем массив с�
 
 void get_direction(t_data *data, char ch)
 {
+	// if(ch == 'N')
+	// 	data->plr->direction = 'N';
+	// else if(ch == 'W')
+	// 	data->plr->direction = 'W';
+	// else if(ch == 'E')
+	// 	data->plr->direction = 'E';
+	// else if(ch == 'S')
+	// 	data->plr->direction = 'S';
 	if(ch == 'N')
-		data->plr->vector = 3 * PI / 2;
+		data->plr->vector = 3 * M_PI / 2;
 	else if(ch == 'W')
-		data->plr->vector = PI;
+		data->plr->vector = M_PI;
 	else if(ch == 'E')
-		data->plr->vector =  2 * PI;
+		data->plr->vector =  2 * M_PI;
 	else if(ch == 'S')
-		data->plr->vector = PI /2;
+		data->plr->vector = M_PI /2;
 }
 
 void search_player(char *str, int y, t_data *data)
@@ -158,9 +166,11 @@ void search_player(char *str, int y, t_data *data)
 		{
 			get_direction(data, str[i]);
 			data->plr->pos.x = i;
-			data->plr->pl_x = i * ZOOM2D + ZOOM2D / 2;
+			data->plr->pl_x = (double)i + 0.5;
+			// data->plr->pl_x = i * ZOOM + ZOOM / 2;
 			data->plr->pos.y = y;
-			data->plr->pl_y = y * ZOOM2D + ZOOM2D / 2;
+			data->plr->pl_y= (double)y + 0.5;
+			// data->plr->pl_y = y * ZOOM + ZOOM / 2;
 			break;
 		}
 		i++;
@@ -195,14 +205,14 @@ void init_player(t_data *data) //заполняем структуру игро�
 void print_player(t_data *data)
 {
 	printf("x = %d, y = %d\n", data->plr->pos.x, data->plr->pos.y);
-	printf("pl_x = %f, pl_y = %f\n", data->plr->pl_x, data->plr->pl_y);
+	// printf("pl_x = %f, pl_y = %f\n", data->plr->pl_x, data->plr->pl_y);
 	printf("vector = %f\n", data->plr->vector);
 }
 
 void init_arr_distances(t_data *data) //инициализируем массив расстояниями до точки
 {
 	int *arr;;
-	arr = (int *)malloc(sizeof(int) * data->win->width2d_win);
+	arr = (int *)malloc(sizeof(int) * WIDTH);
 	if (!arr)
 		return;
 	data->arr_distances = arr;

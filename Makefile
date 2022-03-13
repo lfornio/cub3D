@@ -4,21 +4,25 @@ SRCS		= 	cub3D.c \
 				parsing/error.c \
 				parsing/free_all.c \
 				graphics/graphics.c \
+				graphics/miniature.c \
 				graphics/move.c \
+				graphics/raycasting.c \
+				graphics/texture.c \
 				get_next_line/get_next_line.c \
 				get_next_line/get_next_line_utils.c
-CC 			= 	gcc
+CC 			= 	cc
 FLAGS		=	-g -Wall -Wextra -Werror
 INCLUDES	=	cub3D.h
 OBJS		=	$(SRCS:.c=.o)
 LIBFT_A		=   libft/libft.a
 
 .c.o: $(INCLUDE)
-	$(CC) $(FLAGS) -c $< -o $@
+	@$(CC) $(FLAGS) -c $< -o $@
 
 ${NAME}: $(OBJS) $(INCLUDE)
-	$(MAKE) -C ./libft
-	$(CC) $(FLAGS) $(OBJS) $(LIBFT_A) -lmlx -framework OpenGL -framework AppKit -o $(NAME)
+	@$(MAKE) -C ./libft
+	@$(CC) $(FLAGS) $(OBJS) $(LIBFT_A) -Lmlx -lmlx -framework OpenGL -framework AppKit -o $(NAME)
+	@echo "RRRRRR"
 
 all : libft $(NAME)
 

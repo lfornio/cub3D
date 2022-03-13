@@ -6,7 +6,7 @@
 /*   By: lfornio <lfornio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/20 17:54:06 by lfornio           #+#    #+#             */
-/*   Updated: 2022/02/22 10:01:56 by lfornio          ###   ########.fr       */
+/*   Updated: 2022/03/13 14:30:33 by lfornio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,64 +18,71 @@ void esc_exit(t_data *data)
 	exit(0);
 }
 
-int change_position(t_data *data, int j, int i, char ch)
+void rotation(t_data *data, double angle)
 {
-	int x;
-	int y;
+	double old_vec_x;
+	double old_plane_x;
 
-	x = data->plr->pos.x;
-	y = data->plr->pos.y;
+	old_vec_x = data->ray->vec_x;
+	data->ray->vec_x = data->ray->vec_x * cos(angle) - data->ray->vec_y * sin(angle);
+	data->ray->vec_y = old_vec_x * sin(angle) + data->ray->vec_y * cos(angle);
+	old_plane_x = data->ray->plane_x;
+	data->ray->plane_x = data->ray->plane_x * cos(angle) - data->ray->plane_y * sin(angle);
+	data->ray->plane_y = old_plane_x * sin(angle) + data->ray->plane_y * cos(angle);
+}
 
-	if (data->map->tab[j][i] == '1')
-		return (-1);
-	data->map->tab[y][x] = '0';
-	data->map->tab[j][i] = ch;
-	if (i - x)
-	{
-		data->plr->pos.x = x + (i - x);
-		data->plr->pl_x = data->plr->pl_x + (i - x) * ZOOM2D;
-	}
-	if (j - y)
-	{
-		data->plr->pos.y = y + (j - y);
-		data->plr->pl_y = data->plr->pl_y + (j - y) * ZOOM2D;
-	}
-	return (0);
+void change_fov(int key, t_data *data)
+{
+	if (key == 123)
+		rotation(data, -ROTATION);
+	else if (key == 124)
+		rotation(data, ROTATION);
+	mlx_destroy_image(data->win->mlx_ptr_win, data->images->fon.fon_img_ptr);
+	graphics(data);
+}
+
+void make_step(t_data *data, double v_x, double v_y)
+{
+	if (data->map->tab[(int)data->plr->pl_y][(int)(data->plr->pl_x + v_x * STEP)] != '1')
+		data->plr->pl_x += v_x * STEP;
+	if (data->map->tab[(int)(data->plr->pl_y + v_y * STEP)][(int)data->plr->pl_x] != '1')
+		data->plr->pl_y += v_y * STEP;
+}
+
+void change_position(int key, t_data *data)
+{
+	if (key == 2) //D
+		make_step(data, data->ray->plane_x, data->ray->plane_y);
+	else if (key == 0) //A
+		make_step(data, -data->ray->plane_x, -data->ray->plane_y);
+	else if (key == 1) //S
+		make_step(data, -data->ray->vec_x, -data->ray->vec_y);
+	else if (key == 13) //W
+		make_step(data, data->ray->vec_x, data->ray->vec_y);
+	mlx_destroy_image(data->win->mlx_ptr_win, data->images->fon.fon_img_ptr);
+	graphics(data);
+}
+int	step_exit(int key, t_data *data)
+{
+	(void)key;
+	(void)data;
+	exit(0);
 }
 
 int to_look_to_go(int key, t_data *data)
 {
-	int x;
-	int y;
-
-	x = data->plr->pos.x;
-	y = data->plr->pos.y;
 	if (key == 53)
 		esc_exit(data);
-	if (key == 123)
-		data->plr->vector -= 5 * PI / 180;
-	else if (key == 124)
-		data->plr->vector += 5 * PI / 180;
-	else if (key == 2)
-		x++;
-	else if (key == 0)
-		x--;
-	else if (key == 1)
-		y++;
-	else if (key == 13)
-		y--;
-	if (change_position(data, y, x, data->map->tab[data->plr->pos.y][data->plr->pos.x]) < 0)
-		return (-1);
-	mlx_destroy_image(data->win->mlx_ptr_win, data->images->fon.fon_img_ptr);
-	graphics_2d(data);
+	else if (key == 123 || key == 124)
+		change_fov(key, data);
+	else if (key == 2 || key == 0 || key == 1 || key == 13)
+		change_position(key, data);
 	return (0);
 }
 
 void move(t_data *data)
 {
 	mlx_hook(data->win->win_ptr_win, 2, 1L << 0, to_look_to_go, data);
-	// mlx_hook(mlx->win_ptr, 17, 1L << 0, step_exit, mlx);
-
+	mlx_hook(data->win->win_ptr_win, 17, 1L << 0, step_exit, data);
 	mlx_loop(data->win->mlx_ptr_win); //ждем дейсвий
-	mlx_loop(data->win->mlx2_ptr_win); //ждем дейсвий
 }
