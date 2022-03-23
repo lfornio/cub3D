@@ -1,12 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_isalnum.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mshad <mshad@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/21 19:40:59 by mshad             #+#    #+#             */
+/*   Updated: 2022/03/21 19:41:00 by mshad            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
-int	ft_isalnum(int character)
+int	ft_isalnum(int c)
 {
-	if ((character >= 'A' && character <= 'Z')
-		|| (character >= 'a' && character <= 'z')
-		|| (character >= '0' && character <= '9'))
-	{
-		return (character);
-	}
+	if (((c >= 48) && (c <= 57)) || (ft_isalpha(c)))
+		return (1);
 	return (0);
 }

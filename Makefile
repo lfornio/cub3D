@@ -1,40 +1,94 @@
-NAME		= 	cub3D
-SRCS		= 	cub3D.c \
-				parsing/parsing.c \
-				parsing/error.c \
-				parsing/free_all.c \
-				graphics/graphics.c \
-				graphics/miniature.c \
-				graphics/move.c \
-				graphics/raycasting.c \
-				graphics/texture.c \
-				get_next_line/get_next_line.c \
-				get_next_line/get_next_line_utils.c
-CC 			= 	cc
-FLAGS		=	-g -Wall -Wextra -Werror
-INCLUDES	=	cub3D.h
-OBJS		=	$(SRCS:.c=.o)
+NAME	= cub3D
+HEADER	= cub3d.h
+
+CC		= cc
+FLAGS	= -Wall -Werror -Wextra
+CFLAGS	= $(FLAGS) -I. -Imlx -Ilibft
+OPTFLAGS = -O2
+
+SRC		= main.c \
+			parsing/init_data.c \
+			parsing/read_parse_file.c \
+			parsing/parser_map.c \
+			parsing/color.c \
+			parsing/color2.c \
+			parsing/texture.c \
+			parsing/errors_parsing.c \
+			parsing/check_map.c \
+			graphics/graphics.c \
+			graphics/raycasting_1.c \
+			graphics/raycasting_2.c \
+			graphics/info_for_rays.c \
+			graphics/info_for_texture.c \
+			graphics/init_mlx.c \
+			graphics/move.c \
+			graphics/draw.c \
+			graphics/steps.c \
+			graphics/rotation.c \
+			graphics/texture.c \
+
+SRC_BONUS	= main.c \
+			parsing/init_data.c \
+			parsing/read_parse_file.c \
+			parsing/parser_map.c \
+			parsing/color.c \
+			parsing/color2.c \
+			parsing/texture.c \
+			parsing/errors_parsing.c \
+			parsing/check_map.c \
+			graphics_bonus/graphics.c \
+			graphics_bonus/raycasting_1.c \
+			graphics_bonus/raycasting_2.c \
+			graphics_bonus/info_for_rays.c \
+			graphics_bonus/info_for_texture.c \
+			graphics_bonus/init_mlx.c \
+			graphics_bonus/move.c \
+			graphics_bonus/draw.c \
+			graphics_bonus/steps.c \
+			graphics_bonus/rotation.c \
+			graphics_bonus/texture.c \
+			graphics_bonus/mini_map.c \
+
+ifeq ($(MAKECMDGOALS),bonus)
+	OBJ = $(patsubst %.c, %.o, $(SRC_BONUS))
+else
+	OBJ = $(patsubst %.c, %.o, $(SRC))
+endif
+
+.PHONY:	all clean fclean re libft mlx
+
+.o: .c $(HEADER)
+	@ $(CC) $(CFLAGS) $(OPTFLAGS) -c $< -o $@
+
 LIBFT_A		=   libft/libft.a
 
-.c.o: $(INCLUDE)
-	@$(CC) $(FLAGS) -c $< -o $@
+all:	mlx libft ${NAME}
 
-${NAME}: $(OBJS) $(INCLUDE)
-	@$(MAKE) -C ./libft
-	@$(CC) $(FLAGS) $(OBJS) $(LIBFT_A) -Lmlx -lmlx -framework OpenGL -framework AppKit -o $(NAME)
-	@echo "RRRRRR"
+$(NAME): $(OBJ) $(HEADER)
+		@$(CC) $(OBJ) $(LIBFT_A) -Llibft -Lmlx -lmlx -framework OpenGL -framework AppKit -o $@
 
-all : libft $(NAME)
-
-clean :
-	make -C libft clean
-	rm -f $(OBJS)
+bonus:	mlx libft $(NAME)
 
 
-fclean : clean
-	rm -f libft/libft.a
-	rm -f $(NAME)
+mlx:
+		@make -C mlx/
 
-re : fclean all
+libft:
+		@make -C libft/
 
-.PHONY: all clean fclean re
+clean:
+		@rm -f $(OBJ)
+		@rm -f graphics_bonus/*.o
+		@make -C libft clean
+		@make -C mlx clean
+
+fclean:	clean
+		@rm -f ${NAME}
+		@rm -f libft/libft.a
+		@rm -f mlx/libmlx.a
+		@rm -rf a.out*
+		@rm -rf */a.out*
+		@rm -rf *.gch
+		@rm -rf */*.gch
+
+re:		fclean all

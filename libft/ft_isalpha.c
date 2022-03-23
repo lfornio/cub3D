@@ -1,11 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_isalpha.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mshad <mshad@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/21 19:41:03 by mshad             #+#    #+#             */
+/*   Updated: 2022/03/21 19:41:04 by mshad            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
-int	ft_isalpha(int character)
+int	ft_isalpha(int c)
 {
-	if ((character >= 'A' && character <= 'Z')
-		|| (character >= 'a' && character <= 'z'))
-	{
-		return (character);
-	}
+	if (((c >= 65) && (c <= 90)) || ((c >= 97) && (c <= 122)))
+		return (1);
 	return (0);
 }

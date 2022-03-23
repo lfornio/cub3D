@@ -1,47 +1,39 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_split.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mshad <mshad@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/21 19:43:08 by mshad             #+#    #+#             */
+/*   Updated: 2022/03/21 19:43:09 by mshad            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
-static int	net_c(const char *s, char c)
+static int	ft_counter_str(char const *s, char c)
 {
-	int	i;
+	int			i;
+	char const	*p;
 
 	i = 0;
-	while (s[i])
+	p = s;
+	while (*p)
 	{
-		if (s[i] == c)
-			return (1);
-		i++;
+		while (*p == c)
+			p++;
+		if (*p)
+		{
+			i++;
+			while (*p && *p != c)
+				p++;
+		}
 	}
-	return (0);
+	return (i);
 }
 
-static int	stroki(const char *s, char c)
-{
-	int	i;
-	int	len;
-	int	end;
-	int	minus;
-
-	i = 0;
-	len = 0;
-	minus = 0;
-	if ((ft_strlen(s) == 0) || (*s == 0 && c == 0))
-		return (0);
-	if (net_c(s, c) == 0)
-		return (1);
-	while (s[i] && s[i] == c)
-		i++;
-	while (s[i++])
-	{
-		if (s[i -1] == c && s[i] != c)
-			len++;
-	}
-	end = ft_strlen(s) - 1;
-	while (s[end--] == c)
-		minus = 1;
-	return (len - minus + 1);
-}
-
-void	m_malloc(char **tab)
+static void	ft_freemal(char **tab)
 {
 	unsigned int	i;
 
@@ -54,9 +46,9 @@ void	m_malloc(char **tab)
 	free(tab);
 }
 
-char	*slovo(char const *s, char c, int i, char **arr)
+static char	*ft_mal(char const *s, char c, int i, char **arr)
 {
-	char	*slovo;
+	char	*p;
 	int		len;
 
 	len = 0;
@@ -65,43 +57,43 @@ char	*slovo(char const *s, char c, int i, char **arr)
 		len++;
 		i++;
 	}
-	slovo = (char *)malloc(sizeof(char) * (len + 1));
-	if (slovo == NULL)
+	p = (char *)malloc(sizeof(char) * (len + 1));
+	if (p == NULL)
 	{
-		m_malloc(arr);
+		ft_freemal(arr);
 		return (NULL);
 	}
-	slovo[len] = '\0';
+	p[len] = '\0';
 	while (len-- && s[i - 1] != c)
 	{
-		slovo[len] = s[i - 1];
+		p[len] = s[i - 1];
 		i--;
 	}
-	return (slovo);
+	return (p);
 }
 
 char	**ft_split(char const *s, char c)
 {
-	char	**tab;
-	int		i;
+	char	**rtn;
 	int		k;
+	int		i;
 
 	i = 0;
 	k = 0;
 	if (!s)
 		return (NULL);
-	tab = (char **)malloc(sizeof(char *) * (stroki(s, c) + 1));
-	if (tab == NULL)
+	rtn = malloc(sizeof(char *) * (ft_counter_str(s, c) + 1));
+	if (!rtn)
 		return (NULL);
-	while (k < stroki(s, c))
+	while (k < ft_counter_str(s, c))
 	{
 		while (s[i] && s[i] == c)
 			i++;
-		tab[k] = slovo(s, c, i, tab);
+		rtn[k] = ft_mal(s, c, i, rtn);
 		while (s[i] && s[i] != c)
 			i++;
 		k++;
 	}
-	tab[k] = NULL;
-	return (tab);
+	rtn[k] = NULL;
+	return (rtn);
 }

@@ -3,13 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfornio <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: mshad <mshad@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/09 08:34:33 by lfornio           #+#    #+#             */
-/*   Updated: 2021/05/04 09:42:22 by lfornio          ###   ########.fr       */
+/*   Created: 2022/03/21 19:40:35 by mshad             #+#    #+#             */
+/*   Updated: 2022/03/21 20:39:27 by mshad            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "libft.h"
+
+// int	ft_atoi(const char *str)
+// {
+// 	long	i;
+// 	long	nbr;
+// 	int		isneg;
+
+// 	i = 0;
+// 	nbr = 0;
+// 	isneg = 0;
+// 	while ((str[i] != '\0') && ((str[i] == 32)
+// 			|| (str[i] >= 9 && str[i] <= 13)))
+// 		i++;
+// 	if (str[i] != '\0' && str[i] == '-')
+// 	{
+// 		isneg = 1;
+// 		i++;
+// 	}
+// 	else if (str[i] == '+')
+// 		i++;
+// 	while (str[i] != '\0' && ft_isdigit(str[i]))
+// 		nbr = (nbr * 10) + (str[i++] - '0');
+// 	if (isneg == 1)
+// 		return (-nbr);
+// 	return (nbr);
+// }
 
 int	ft_atoi(const char *str)
 {

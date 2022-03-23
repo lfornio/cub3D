@@ -1,88 +1,80 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3D.h                                            :+:      :+:    :+:   */
+/*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfornio <lfornio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/03 16:10:58 by lfornio           #+#    #+#             */
-/*   Updated: 2022/03/13 17:34:00 by lfornio          ###   ########.fr       */
+/*   Created: 2022/03/09 13:57:01 by mshad             #+#    #+#             */
+/*   Updated: 2022/03/21 17:25:16 by lfornio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
 # define CUB3D_H
 
-# include "mlx/mlx.h"
-# include <unistd.h>
-# include <math.h>
-# include <fcntl.h>
 # include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <errno.h>
+# include <string.h>
+# include <math.h>
+# include "mlx/mlx.h"
 # include "libft/libft.h"
-# include "get_next_line/get_next_line.h"
 
-#define ZOOM2D 6
-#define TEXTURE 240
-#define WIDTH 1920
-#define HEIGHT 1080
-#define STEP 0.2
-#define ROTATION M_PI / 60
+# define W_WIDTH 	1920
+# define W_HEIGHT	1080
+# define TEX		512
+# define MINI		9
+# define PLAYER		3
 
-typedef struct s_win  //структура для окна
+// colors
+# define RED		"\033[31;1m"
+# define YELLOW		"\033[33;1m"
+# define RESET		"\033[0m"
+# define GREEN		"\033[32;1m"
+
+// keys
+# define W			13
+# define A			0
+# define S			1
+# define D			2
+# define LEFT		123
+# define RIGHT		124
+# define ESC		53
+
+//move
+# define STEP		0.1
+# define ROT		0.05
+
+typedef struct s_win
 {
-	void	*mlx_ptr_win;
-	void	*win_ptr_win;
-
-	int		width2d_win;
-	int		height2d_win;
-	void	*mlx2_ptr_win;
-	void	*win2_ptr_win;
+	void	*mlx;
+	void	*win;
 }	t_win;
 
-typedef struct s_map   //структура для карты
-{
-	int		width_map;
-	int		height_map;
-	char	**tab;
-
-}	t_map;
-
-typedef struct s_pos   //структура исходной позиции
+typedef struct s_player
 {
 	int		x;
 	int		y;
-
-}	t_pos;
-
-typedef struct s_plr   //структура игрока и луча
-{
-	t_pos		pos;
-	double		pl_x;
-	double		pl_y;
-	// char		direction;
-	double		vector;
-	double		start;
-	double		end;
-
+	char	dir;
 }	t_player;
 
-typedef struct s_fon_img
+typedef struct s_map
 {
-	void	*fon_img_ptr;
-	char	*addr;
-	int		bpp;
-	int		size_line;
-	int		endian;
-}	t_fon_img;
-
-typedef struct s_image   //структура изображений
-{
-	t_fon_img fon;
-
-}	t_image;
+	char	**map_arr;
+	int		f_color;
+	int		c_color;
+	char	*no_tex;
+	char	*so_tex;
+	char	*ea_tex;
+	char	*we_tex ;
+}	t_map;
 
 typedef struct s_ray
 {
+	double	pl_x;
+	double	pl_y;
 	double	vec_x;
 	double	vec_y;
 	double	plane_x;
@@ -93,78 +85,109 @@ typedef struct s_ray
 	double	side_dist_y;
 	double	delta_dist_x;
 	double	delta_dist_y;
+	double	perp_wall_dist;
 	int		map_x;
 	int		map_y;
 	int		step_x;
 	int		step_y;
-	int side;
-	double perp_wall_dist ;
-	int line_height ;
+	int		side;
+	int		line_height;
+	int		draw_start;
+	int		draw_end;
+}	t_ray;
 
+typedef struct s_back
+{
+	void	*back_ptr;
+	char	*addr;
+	int		bpp;
+	int		size_line;
+	int		endian;
+}	t_back;
 
-} t_ray;
+typedef struct s_img
+{
+	void	*img_ptr;
+	int		*addr;
+	int		bpp;
+	int		size_line;
+	int		endian;
+}	t_img;
 
 typedef struct s_tex
 {
-	char *str_n;
-	char *str_s;
-	char *str_w;
-	char *str_e;
-	void *ptr_n;
-	void *ptr_s;
-	void *ptr_w;
-	void *ptr_e;
-	int **img_n;
-	int **img_s;
-	int **img_w;
-	int **img_e;
-	int tex_num;
-	double wall_x;
-	int tex_x;
-	double step;
-	double tex_pos;
-
-
-
-
-} t_tex;
-
-
-
-
-
+	t_img	tex_arr[4];
+	int		tex_num;
+	int		tex_flag;
+	int		tex_x;
+	int		tex_y;
+	double	wall_x;
+	double	step;
+	double	tex_pos;
+}	t_tex;
 
 typedef struct s_data
 {
-	t_win *win; //структура для окна
-	t_map *map; //структура для карты
-	t_player *plr;  //структура для игрока и луча
-	t_image *images;  //структура для изображений
-	int *arr_distances;
-	t_ray *ray;
-	t_tex *tex;
-
+	t_win		win;
+	t_player	player;
+	t_map		map;
+	t_ray		ray;
+	t_back		back;
+	t_tex		tex;
 
 }	t_data;
 
+/*--------------------parsing-----------------------*/
 
+int		main(int argc, char **argv);
+t_data	*init_data(void);
+void	free_data(t_data *data);
+void	read_and_parse_file(t_data *data, const char *map_file);
+void	error_exit(char *str);
+void	parser_line(t_data *data, char *line);
+void	parse_map(t_data *data, char *line);
+void	check_file_format(const char *map_path, int fd);
+int		check_tex_and_color(t_data *data, char *line);
+int		parse_textures(t_data *data, char *str);
+void	parsing_tex(t_data *data, char *str);
+void	check_tex(char *str);
+int		parse_colors(t_data *data, char *str);
+int		ft_natoi(const char *str, int len);
+int		color_converting(char *str);
+void	free_str_arr(char **str_arr);
+void	check_map(t_data *data);
+void	check_sympols(char **map);
+void	check_player(t_data *data);
+void	check_borders(char **map, int i);
+int		get_height_arr(char **arr);
+int		valid_symbol(char **arr, int i, int j, char s);
+void	check_uncorrect_postion(t_data *data, char s);
 
-void	error(const char *s);
-void	error_file(const char *name_file);
-void	parsing(t_data *data, char *map);
-void	free_all(t_data *data);
+/*--------------------graphics-----------------------*/
+
 void	graphics(t_data *data);
-void	print_player(t_data *data);
+void	init_ray_struct(t_data *data);
+void	init_texture_struct(t_data *data);
+void	init_mlx(t_data *data);
 void	move(t_data *data);
-void	img_pix_put(t_fon_img *fon, int x, int y, int color);
-void	init_fon(t_data *data);
-void	player_position_search(t_data *data);
-void	init_arr_distances(t_data *data);
-void	print2d(t_data *data);
+void	ft_pix_put(t_back *back, int x, int y, int color);
 void	raycasting(t_data *data);
-void init_ray_struct(t_data *data);
-void print_texture(t_data *data, int x);
+void	print_line(t_data *data, int x);
+void	steps(int key, t_data *data);
+int		draw(t_data *data);
+void	rotations(int key, t_data *data);
+void	draw_walls(t_data *data, int x);
+void	init_image_back(t_data *data);
+void	height_line(t_data *data);
+void	get_flag_wall(t_data *data);
+void	get_x_from_texture(t_data *data);
+int		get_color(t_data *data);
+void	distance_to_the_wall(t_data *data);
 
+/*-------------------bonus------------------------*/
 
+void	draw_mini_map(t_data *data);
+void	draw_player(t_data *data);
+int		error_mini_map(t_data *data);
 
 #endif

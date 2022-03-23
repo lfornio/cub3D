@@ -1,70 +1,60 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_itoa.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mshad <mshad@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/21 19:41:29 by mshad             #+#    #+#             */
+/*   Updated: 2022/03/21 19:41:30 by mshad            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
-static unsigned int	perenos(int n)
+static int	ft_size_nbr(int c)
 {
-	unsigned int	nb;
+	int	i;
 
-	if (n < 0)
-		nb = -n;
-	else
-		nb = n;
-	return (nb);
-}
-
-static unsigned int	delenie(unsigned int n)
-{
-	unsigned int	len;
-
-	len = 0;
-	while (n >= 10)
+	if (c < 0)
 	{
-		n = n / 10;
-		len++;
+		i = 1;
+		c = -c;
 	}
-	return (len + 1);
-}
-
-static int	znak(int nb)
-{
-	int	znak;
-
-	if (nb < 0)
-		znak = 1;
 	else
-		znak = 0;
-	return (znak);
-}
-
-static char	*vivod(char *str, unsigned int nb, int i)
-{
-	while (nb >= 10)
+		i = 0;
+	while (c)
 	{
-		str[i--] = nb % 10 + '0';
-		nb = nb / 10;
+		c = c / 10;
+		i++;
 	}
-	str[i] = nb % 10 + '0';
-	return (str);
+	return (i);
 }
 
 char	*ft_itoa(int n)
 {
-	char			*str;
-	int				i;
-	unsigned int	nb;
-	unsigned int	dlina;
+	char	*str;
+	int		size;
 
-	nb = perenos(n);
-	dlina = delenie(nb);
-	str = (char *)malloc(sizeof(char) * (dlina + znak(n) + 1));
+	if (n == 0)
+		return (ft_strdup("0"));
+	if (n == -2147483648)
+		return (ft_strdup("-2147483648"));
+	size = ft_size_nbr(n);
+	str = malloc(sizeof(char) * size + 1);
 	if (str == NULL)
 		return (NULL);
 	if (n < 0)
 	{
+		n = n * (-1);
 		str[0] = '-';
-		dlina = dlina + 1;
 	}
-	i = dlina - 1;
-	str = vivod(str, nb, i);
-	str[dlina] = '\0';
+	str[size] = '\0';
+	while (n > 0)
+	{
+		size--;
+		str[size] = (n % 10) + 48;
+		n = n / 10;
+	}
 	return (str);
 }
