@@ -1,12 +1,12 @@
-NO ./textures/1/3.xpm
-SO ./textures/1/3.xpm
+NO ./textures/1.xpm
+SO ./textures/1.xpm
 
-EA ./textures/1/3.xpm
+EA ./textures/1.xpm
 
 C 61,189,41
 F 12,55,6
 
-WE ./textures/1/3.xpm
+WE ./textures/1.xpm
 
 111
 101
